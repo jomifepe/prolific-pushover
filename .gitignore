@@ -1,5 +1,5 @@
 .env
-out
+dist
 .DS_Store
 /.idea/
 /.vscode/

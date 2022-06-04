@@ -1,19 +1,19 @@
 {
-  "name": "prolific-pusher",
+  "name": "prolific-pushover",
   "version": "1.0.0",
-  "description": "Send notifiations to Pusher when there are new Prolific studies",
+  "description": "Send notifiations to Pushover when there are new Prolific studies",
   "main": "src/index.ts",
   "keywords": [
     "prolific",
     "notifications",
-    "pusher",
+    "pushover",
     "studies"
   ],
   "author": "jomifepe",
   "license": "MIT",
   "scripts": {
     "start": "deno run --allow-net --allow-env --allow-read src/index.ts", 
-    "build": "deno compile --allow-net --allow-env --allow-read --output dist/prolific-pusher src/index.ts",
+    "build": "deno compile --allow-net --allow-env --allow-read --output dist/prolific-pushover src/index.ts",
     "lint": "deno lint"
   }
 }

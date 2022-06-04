@@ -3,14 +3,14 @@ import { config } from "https://deno.land/x/dotenv/mod.ts";
 import { ProlificStudiesResponse, ProlificStudy } from "./types.ts";
 import { getRandomNumber } from "./utils.ts";
 
-const { BEARER_TOKEN, PUSHER_TOKEN, PUSHER_USER } = config();
+const { BEARER_TOKEN, PUSHOVER_TOKEN, PUSHOVER_USER } = config();
 
 const buildNotificationContent = (study: ProlificStudy) => {
   const placesLeft = study.total_available_places - study.places_taken;
 
   return JSON.stringify({
-    token: PUSHER_TOKEN,
-    user: PUSHER_USER,
+    token: PUSHOVER_TOKEN,
+    user: PUSHOVER_USER,
     title: "New Prolific Study Available",
     message: `
       Title: ${study.name}
