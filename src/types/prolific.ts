@@ -1,5 +1,5 @@
-export type ProlificStudiesResponse = {
-  results: ProlificStudy[];
+export type StudiesResponse = {
+  results: Study[];
   _links: Links;
   meta: Meta;
 };
@@ -35,12 +35,12 @@ export type Meta = {
   count: number;
 };
 
-export type ProlificStudy = {
+export type Study = {
   id: string;
   name: string;
   internal_name: string | null;
-  status: ProlificStudyStatus;
-  study_type: ProlificStudyType;
+  status: StudyStatus;
+  study_type: StudyType;
   total_available_places: number;
   places_taken: number;
   number_of_submissions: number;
@@ -49,8 +49,14 @@ export type ProlificStudy = {
   publish_at: string;
   date_created: string;
   [key: string]: any;
-}
+};
 
-export type ProlificStudyType = 'SINGLE' | 'UK_REP_SAMPLE' | 'US_REP_SAMPLE';
+export type StudyType = "SINGLE" | "UK_REP_SAMPLE" | "US_REP_SAMPLE";
 
-export type ProlificStudyStatus = 'UNPUBLISHED' | 'SCHEDULED' | 'ACTIVE' | 'AWAITING REVIEW' | 'PAUSED' | 'COMPLETED';
+export type StudyStatus =
+  | "UNPUBLISHED"
+  | "SCHEDULED"
+  | "ACTIVE"
+  | "AWAITING REVIEW"
+  | "PAUSED"
+  | "COMPLETED";

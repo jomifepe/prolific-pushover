@@ -1,6 +1,6 @@
 import { config } from "https://deno.land/x/dotenv/mod.ts";
-
-import { ProlificStudy } from "./types.ts";
+import { Study } from "./types/prolific.ts";
+import { NotificationPayload } from "./types/pushover.ts";
 
 const { PUSHOVER_TOKEN, PUSHOVER_USER } = config();
 
@@ -17,7 +17,7 @@ export const getRandomNumber = (options: number | GetRandomNumberOptions) => {
   return randomNumber;
 };
 
-export const buildNotificationPayload = (study: ProlificStudy) => {
+export const buildNotificationPayload = (study: Study): NotificationPayload => {
   const placesLeft = study.total_available_places - study.places_taken;
 
   return {

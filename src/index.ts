@@ -1,6 +1,5 @@
 import { config } from "https://deno.land/x/dotenv/mod.ts";
-
-import { ProlificStudiesResponse, ProlificStudy } from "./types.ts";
+import { StudiesResponse, Study } from "./types/prolific.ts";
 import { buildNotificationPayload, getRandomNumber } from "./utils.ts";
 
 const { BEARER_TOKEN, MIN_POLLING_TIME, MAX_POLLING_TIME } = config();
@@ -11,7 +10,7 @@ const fetchStudies = () => {
   });
 };
 
-const sendNotification = (payload: Record<string, string>) => {
+const sendNotification = (payload: Record<string, any>) => {
   return fetch(`https://api.pushover.net/1/messages.json`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -24,7 +23,7 @@ const fetchAndNotify = async () => {
 
   try {
     if (response.status === 200) {
-      const { results } = (await response.json()) as ProlificStudiesResponse;
+      const { results } = (await response.json()) as StudiesResponse;
       if (results.length === 0) return;
 
       for await (const study of results) {
