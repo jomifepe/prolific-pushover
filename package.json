@@ -2,7 +2,7 @@
   "name": "prolific-pusher",
   "version": "1.0.0",
   "description": "Send notifiations to Pusher when there are new Prolific studies",
-  "main": "src/index.js",
+  "main": "src/index.ts",
   "keywords": [
     "prolific",
     "notifications",
@@ -13,6 +13,7 @@
   "license": "MIT",
   "scripts": {
     "start": "deno run --allow-net --allow-env --allow-read src/index.ts", 
+    "build": "deno compile --allow-net --allow-env --allow-read --output dist/prolific-pusher src/index.ts",
     "lint": "deno lint"
   }
 }
