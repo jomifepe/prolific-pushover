@@ -1,12 +1,12 @@
 import { config } from "https://deno.land/x/dotenv/mod.ts";
-import { StudiesResponse, Study } from "./types/prolific.ts";
+import { StudiesResponse } from "./types/prolific.ts";
 import { buildNotificationPayload, getRandomNumber } from "./utils.ts";
 
-const { BEARER_TOKEN, MIN_POLLING_TIME, MAX_POLLING_TIME } = config();
+const { PROLIFIC_BEARER_TOKEN, MIN_POLLING_TIME, MAX_POLLING_TIME } = config();
 
 const fetchStudies = () => {
   return fetch("https://internal-api.prolific.co/api/v1/studies?current=1", {
-    headers: { Authorization: `Bearer ${BEARER_TOKEN}` },
+    headers: { Authorization: `Bearer ${PROLIFIC_BEARER_TOKEN}` },
   });
 };
 
