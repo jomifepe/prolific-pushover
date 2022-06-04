@@ -1,9 +1,24 @@
 import { config } from "https://deno.land/x/dotenv/mod.ts";
 
-import { StudiesResponse } from "./types.ts";
+import { ProlificStudiesResponse, ProlificStudy } from "./types.ts";
 import { getRandomNumber } from "./utils.ts";
 
 const { BEARER_TOKEN, PUSHER_TOKEN, PUSHER_USER } = config();
+
+const buildNotificationContent = (study: ProlificStudy) => {
+  const placesLeft = study.total_available_places - study.places_taken;
+
+  return JSON.stringify({
+    token: PUSHER_TOKEN,
+    user: PUSHER_USER,
+    title: "New Prolific Study Available",
+    message: `
+      Title: ${study.name}
+      Reward: £${study.reward}
+      Places: ${placesLeft}/${study.total_available_places}
+    `,
+  })
+}
 
 const fetchStudies = async () => {
   const response = await fetch(
@@ -16,21 +31,20 @@ const fetchStudies = async () => {
   );
 
   if (response.status === 200) {
-    const content = (await response.json()) as StudiesResponse;
+    const content = (await response.json()) as ProlificStudiesResponse;
 
     if (content.results.length > 0) {
-      await fetch(`https://api.pushover.net/1/messages.json`, {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          token: PUSHER_TOKEN,
-          user: PUSHER_USER,
-          title: "New Prolific Study Available",
-          message: JSON.stringify(content, null, 2),
-        }),
-      });
+      for await (const study of content.results) {
+        console.info('New Prolific Study Available', JSON.stringify(study, null, 2))
+
+        await fetch(`https://api.pushover.net/1/messages.json`, {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: buildNotificationContent(study),
+        });
+      }
     }
   }
 };
@@ -40,4 +54,5 @@ const startPolling = () => {
   setTimeout(startPolling, getRandomNumber({ min: 15000, max: 30000 }));
 };
 
+console.info('Notification polling started…')
 startPolling();
