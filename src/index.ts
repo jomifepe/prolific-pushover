@@ -1,58 +1,62 @@
 import { config } from "https://deno.land/x/dotenv/mod.ts";
 
 import { ProlificStudiesResponse, ProlificStudy } from "./types.ts";
-import { getRandomNumber } from "./utils.ts";
+import { buildNotificationPayload, getRandomNumber } from "./utils.ts";
 
-const { BEARER_TOKEN, PUSHOVER_TOKEN, PUSHOVER_USER } = config();
+const { BEARER_TOKEN, MIN_POLLING_TIME, MAX_POLLING_TIME } = config();
 
-const buildNotificationContent = (study: ProlificStudy) => {
-  const placesLeft = study.total_available_places - study.places_taken;
+const fetchStudies = () => {
+  return fetch("https://internal-api.prolific.co/api/v1/studies?current=1", {
+    headers: { Authorization: `Bearer ${BEARER_TOKEN}` },
+  });
+};
 
-  return JSON.stringify({
-    token: PUSHOVER_TOKEN,
-    user: PUSHOVER_USER,
-    title: "New Prolific Study Available",
-    message: `
-      Title: ${study.name}
-      Reward: £${study.reward}
-      Places: ${placesLeft}/${study.total_available_places}
-    `,
-  })
-}
+const sendNotification = (payload: Record<string, string>) => {
+  return fetch(`https://api.pushover.net/1/messages.json`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+};
 
-const fetchStudies = async () => {
-  const response = await fetch(
-    "https://internal-api.prolific.co/api/v1/studies?current=1",
-    {
-      headers: {
-        Authorization: `Bearer ${BEARER_TOKEN}`,
-      },
-    }
-  );
+const fetchAndNotify = async () => {
+  const response = await fetchStudies();
 
-  if (response.status === 200) {
-    const content = (await response.json()) as ProlificStudiesResponse;
+  try {
+    if (response.status === 200) {
+      const { results } = (await response.json()) as ProlificStudiesResponse;
+      if (results.length === 0) return;
 
-    if (content.results.length > 0) {
-      for await (const study of content.results) {
-        console.info('New Prolific Study Available', JSON.stringify(study, null, 2))
+      for await (const study of results) {
+        console.info(
+          "New Study",
+          JSON.stringify(study, null, 2)
+        );
 
-        await fetch(`https://api.pushover.net/1/messages.json`, {
-          method: "POST",
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: buildNotificationContent(study),
-        });
+        const pusherResponse = await sendNotification(buildNotificationPayload(study));
+        if (pusherResponse.status >= 400) {
+          throw new Error(`Failed to send notification to Pushover [${response.status}]`);
+        }
       }
+    } else if (response.status >= 400) {
+      throw new Error(`Failed to fetch Prolific studies [${response.status}]`);
     }
+  } catch (error) {
+    console.error(error);
   }
 };
 
 const startPolling = () => {
-  fetchStudies();
-  setTimeout(startPolling, getRandomNumber({ min: 15000, max: 30000 }));
+  fetchAndNotify();
+
+  setTimeout(
+    startPolling,
+    getRandomNumber({
+      min: parseInt(MIN_POLLING_TIME ?? 15000),
+      max: parseInt(MAX_POLLING_TIME ?? 30000, 10),
+    })
+  );
 };
 
-console.info('Notification polling started…')
+console.info("Notification polling started…");
 startPolling();
