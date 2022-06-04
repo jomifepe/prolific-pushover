@@ -22,6 +22,9 @@ const fetchStudies = async () => {
     if (content.results.length > 0) {
       await fetch(`https://api.pushover.net/1/messages.json`, {
         method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({
           token: PUSHER_TOKEN,
           user: PUSHER_USER,
@@ -35,7 +38,7 @@ const fetchStudies = async () => {
 
 const startPolling = () => {
   fetchStudies();
-  setTimeout(startPolling, getRandomNumber({ min: 5000, max: 30000 }));
+  setTimeout(startPolling, getRandomNumber({ min: 15000, max: 30000 }));
 };
 
 startPolling();
