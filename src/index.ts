@@ -1,4 +1,5 @@
 import { config } from "https://deno.land/x/dotenv/mod.ts";
+import { RecordOfAny } from "./types/index.ts";
 import { StudiesResponse } from "./types/prolific.ts";
 import { buildNotificationPayload, getRandomNumber } from "./utils.ts";
 
@@ -10,7 +11,7 @@ const fetchStudies = () => {
   });
 };
 
-const sendNotification = (payload: Record<string, any>) => {
+const sendNotification = (payload: RecordOfAny) => {
   return fetch(`https://api.pushover.net/1/messages.json`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

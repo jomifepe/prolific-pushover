@@ -48,6 +48,7 @@ export type Study = {
   total_cost: number;
   publish_at: string;
   date_created: string;
+  // deno-lint-ignore no-explicit-any
   [key: string]: any;
 };
 
