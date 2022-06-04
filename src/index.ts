@@ -17,7 +17,6 @@ const fetchStudies = async () => {
 
   if (response.status === 200) {
     const content = (await response.json()) as StudiesResponse;
-    console.log({ count: content.results.length });
 
     if (content.results.length > 0) {
       await fetch(`https://api.pushover.net/1/messages.json`, {
@@ -29,7 +28,7 @@ const fetchStudies = async () => {
           token: PUSHER_TOKEN,
           user: PUSHER_USER,
           title: "New Prolific Study Available",
-          message: "Test",
+          message: JSON.stringify(content, null, 2),
         }),
       });
     }
