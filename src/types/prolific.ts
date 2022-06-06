@@ -38,21 +38,22 @@ export type Meta = {
 export type Study = {
   id: string;
   name: string;
-  internal_name: string | null;
-  status: StudyStatus;
   study_type: StudyType;
+  date_created: string;
   total_available_places: number;
   places_taken: number;
-  number_of_submissions: number;
   reward: number;
-  total_cost: number;
-  publish_at: string;
-  date_created: string;
-  // deno-lint-ignore no-explicit-any
-  [key: string]: any;
-};
-
-export type StudyType = "SINGLE" | "UK_REP_SAMPLE" | "US_REP_SAMPLE";
+  published_at: string;
+  average_reward_per_hour: number;
+  researcher: Researcher;
+  description: string;
+  estimated_completion_time: number;
+  device_compatibility: DeviceCompatibility[];
+  peripheral_requirements: PeripheralRequirements[];
+  estimated_reward_per_hour: number;
+  maximum_allowed_time: number;
+  average_completion_time: number;
+}
 
 export type StudyStatus =
   | "UNPUBLISHED"
@@ -61,3 +62,24 @@ export type StudyStatus =
   | "AWAITING REVIEW"
   | "PAUSED"
   | "COMPLETED";
+
+export type Institution = {
+    name?: any;
+    logo?: any;
+    link: string;
+}
+
+export type Researcher = {
+    id: string;
+    name: string;
+    email: string;
+    country: string;
+    institution: Institution;
+}
+
+export type StudyType = "SINGLE" | "UK_REP_SAMPLE" | "US_REP_SAMPLE";
+
+export type PeripheralRequirements = 'audio' | 'camera' | 'download' | 'microphone';
+
+export type DeviceCompatibility = 'desktop' | 'tablet' | 'mobile';
+

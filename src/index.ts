@@ -7,7 +7,12 @@ const { PROLIFIC_BEARER_TOKEN, MIN_POLLING_TIME, MAX_POLLING_TIME } = config();
 
 const fetchStudies = () => {
   return fetch("https://internal-api.prolific.co/api/v1/studies?current=1", {
-    headers: { Authorization: `Bearer ${PROLIFIC_BEARER_TOKEN}` },
+    headers: { 
+      Origin: 'https://app.prolific.co/',
+      Referer: 'https://app.prolific.co/',
+      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.61 Safari/537.36',
+      Authorization: `Bearer ${PROLIFIC_BEARER_TOKEN}` 
+    },
   });
 };
 
@@ -28,10 +33,7 @@ const fetchAndNotify = async () => {
       if (results.length === 0) return;
 
       for await (const study of results) {
-        console.info(
-          "New Study",
-          JSON.stringify(study, null, 2)
-        );
+        console.info(`New Study Available: ${study.id}`);
 
         const pusherResponse = await sendNotification(buildNotificationPayload(study));
         if (pusherResponse.status >= 400) {
