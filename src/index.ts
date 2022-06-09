@@ -28,6 +28,10 @@ const fetchAndNotify = async () => {
   const response = await fetchStudies();
 
   try {
+    if (response.status >= 400) {
+      throw new Error(`Failed to fetch Prolific studies [${response.status}]`);
+    }
+    
     if (response.status === 200) {
       const { results } = (await response.json()) as StudiesResponse;
       if (results.length === 0) return;
@@ -40,8 +44,6 @@ const fetchAndNotify = async () => {
           throw new Error(`Failed to send notification to Pushover [${response.status}]`);
         }
       }
-    } else if (response.status >= 400) {
-      throw new Error(`Failed to fetch Prolific studies [${response.status}]`);
     }
   } catch (error) {
     console.error(error);
@@ -54,7 +56,7 @@ const startPolling = () => {
   setTimeout(
     startPolling,
     getRandomNumber({
-      min: parseInt(MIN_POLLING_TIME ?? 15000),
+      min: parseInt(MIN_POLLING_TIME ?? 15000, 10),
       max: parseInt(MAX_POLLING_TIME ?? 30000, 10),
     })
   );
