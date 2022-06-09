@@ -1,4 +1,4 @@
-import { config } from "https://deno.land/x/dotenv/mod.ts";
+import { config } from "https://deno.land/x/dotenv@v3.2.0/mod.ts";
 import { RecordOfAny } from "./types/index.ts";
 import { StudiesResponse } from "./types/prolific.ts";
 import { buildNotificationPayload, getRandomNumber } from "./utils.ts";

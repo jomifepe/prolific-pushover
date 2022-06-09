@@ -1,4 +1,4 @@
-import { config } from "https://deno.land/x/dotenv/mod.ts";
+import { config } from "https://deno.land/x/dotenv@v3.2.0/mod.ts";
 import { DeviceCompatibility, Study } from "./types/prolific.ts";
 import { NotificationPayload } from "./types/pushover.ts";
 
